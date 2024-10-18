@@ -15,8 +15,8 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await threads(url);
     console.log('Media Data:', mediaData);
 
-    const { video, image } = mediaData.data; // Correctly extract the video or image URL
-    const downloadUrl = video || image;
+    // Extract the video or image URL
+    const downloadUrl = mediaData?.data?.video || mediaData?.data?.image;
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl);
@@ -26,8 +26,9 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = video ? 'media.mp4' : 'media.jpg';
-    const mimetype = video ? 'video/mp4' : 'image/jpeg';
+    const fileName = downloadUrl.includes('.mp4') ? 'media.mp4' : downloadUrl.includes('.jpg') ? 'media.jpg' : 'media';
+    const mimetype = downloadUrl.includes('.mp4') ? 'video/mp4' : downloadUrl.includes('.jpg') ? 'image/jpeg' : 'application/octet-stream';
+    
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
   } catch (error) {
@@ -38,7 +39,7 @@ const handler = async (m, { conn, args }) => {
 };
 
 handler.help = ['threads <url>'];
-handler.tags are ['downloader'];
+handler.tags = ['downloader'];
 handler.command = ['threads'];
 
 export default handler;
