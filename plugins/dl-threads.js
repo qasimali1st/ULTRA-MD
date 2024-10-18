@@ -4,22 +4,22 @@ const { threads } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Instagram Threads link next to the command`;
-  if (!args[0].match(/threads\.net\/(@[^\s\/]+\/post\/[^\s?]+)/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/threads\.net/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
   try {
     const url = args[0];
-    console.log('URL:', url); // Debug log for URL
+    console.log('URL:', url);
 
     // Fetch media data using nayan-media-downloader
     let mediaData = await threads(url);
-    console.log('Media Data:', mediaData); // Debug log for media data
+    console.log('Media Data:', mediaData);
 
     const { video, image } = mediaData.data; // Correctly extract the video or image URL
-    const downloadUrl = video || image; // Use video if available, else use image
+    const downloadUrl = video || image;
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
-    console.log('Download URL:', downloadUrl); // Debug log for download URL
+    console.log('Download URL:', downloadUrl);
 
     const response = await fetch(downloadUrl);
     if (!response.ok) throw new Error('Failed to fetch the media content');
@@ -38,7 +38,7 @@ const handler = async (m, { conn, args }) => {
 };
 
 handler.help = ['threads <url>'];
-handler.tags = ['downloader'];
+handler.tags are ['downloader'];
 handler.command = ['threads'];
 
 export default handler;
