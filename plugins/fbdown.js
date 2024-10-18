@@ -4,22 +4,22 @@ const { fbdown2 } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Facebook link next to the command`;
-  if (!args[0].match(/(facebook\.com\/share\/[^/]+\/[^/]+)/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/(facebook\.com\/share\/[^\/]+\/[^\/]+)/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
   try {
     const url = args[0];
-    console.log('URL:', url);
+    console.log('URL:', url); // Debug log for URL
 
     // Fetch media data using nayan-media-downloader
     const key = "Nayan";
     let mediaData = await fbdown2(url, key);
-    console.log('Media Data:', mediaData);
+    console.log('Media Data:', mediaData); // Debug log for media data
 
-    const downloadUrl = mediaData.url || mediaData.data.url; // Correctly extract the download URL
+    const downloadUrl = mediaData.url || mediaData.data?.url; // Correctly extract the download URL
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
-    console.log('Download URL:', downloadUrl);
+    console.log('Download URL:', downloadUrl); // Debug log for download URL
     const response = await fetch(downloadUrl);
     if (!response.ok) throw new Error('Failed to fetch the media content');
     const arrayBuffer = await response.arrayBuffer();
