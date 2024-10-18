@@ -11,6 +11,7 @@ const handler = async (m, { conn, args }) => {
     const url = args[0];
     console.log('URL:', url);
 
+    // Fetch media data using nayan-media-downloader
     let mediaData = await capcut(url);
     console.log('Media Data:', mediaData);
 
@@ -29,9 +30,13 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = downloadUrl.endsWith('.mp4') ? 'media.mp4' : 'media.jpg';
+    // Check content length
+    if (mediaBuffer.length === 0) throw new Error('Received empty media content');
+
+    // Dynamic file naming
+    const fileName = `media_${Date.now()}.${downloadUrl.endsWith('.mp4') ? 'mp4' : 'jpg'}`;
     const mimetype = downloadUrl.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg';
-    
+
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
   } catch (error) {
