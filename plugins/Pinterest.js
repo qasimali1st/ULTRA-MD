@@ -15,7 +15,8 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await pintarest(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    const { url: downloadUrl } = mediaData.data; // Correctly extract the download URL
+    // Extract the download URL from mediaData
+    const downloadUrl = mediaData.url;
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl); // Debug log for download URL
@@ -24,8 +25,8 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = downloadUrl.endsWith('.mp4') ? 'media.mp4' : 'media.jpg';
-    const mimetype = downloadUrl.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg';
+    const fileName = 'media.jpg';
+    const mimetype = 'image/jpeg';
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
   } catch (error) {
