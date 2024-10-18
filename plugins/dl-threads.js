@@ -18,17 +18,17 @@ const handler = async (m, { conn, args, usedPrefix }) => {
     const { video, image } = mediaData.data;
     if (!video && !image) throw new Error('Could not fetch the download URL');
 
-    const buttons = [
-      { buttonId: `${usedPrefix}dl ${url}|sd`, buttonText: { displayText: 'SD' }, type: 1 },
-      { buttonId: `${usedPrefix}dl ${url}|hd`, buttonText: { displayText: 'HD' }, type: 1 }
+    let options = [
+      [{ buttonText: { displayText: 'SD' }, buttonId: `${usedPrefix}dl_sd ${url}` }],
+      [{ buttonText: { displayText: 'HD' }, buttonId: `${usedPrefix}dl_hd ${url}` }]
     ];
-    const buttonMessage = {
+    await conn.sendMessage(m.chat, {
       text: 'Choose the format to download:',
+      buttons: options,
+      headerType: 1,
       footer: 'Instagram Threads Downloader',
-      buttons: buttons,
-      headerType: 1
-    };
-    await conn.sendButton(m.chat, buttonMessage.text, buttonMessage.footer, buttonMessage.buttons, m);
+    }, { quoted: m });
+
   } catch (error) {
     console.error('Error:', error.message, error.stack);
     await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
@@ -36,12 +36,16 @@ const handler = async (m, { conn, args, usedPrefix }) => {
   }
 };
 
-const downloadMedia = async (m, { conn, args }) => {
-  const [url, quality] = args[0].split('|');
+const downloadMedia = async (m, format) => {
+  const [url, quality] = format.split('_');
   m.react('⏳');
+
+  console.log('URL:', url, 'Quality:', quality);
 
   try {
     let mediaData = await threads(url);
+    console.log('Media Data:', mediaData);
+
     const downloadUrl = quality === 'hd' ? mediaData.data.video : mediaData.data.image;
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
@@ -62,10 +66,13 @@ const downloadMedia = async (m, { conn, args }) => {
   }
 };
 
-handler.button = downloadMedia;
+handler.buttons = async (m, { conn, args }) => {
+  await downloadMedia(m, args[0]);
+};
 
 handler.help = ['threads <url>'];
 handler.tags = ['downloader'];
 handler.command = ['threads'];
+handler.command = /dl_(sd|hd)/; // Ensure this command catches both formats
 
 export default handler;
