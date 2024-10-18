@@ -15,8 +15,12 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await threads(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    // Extract the video and image URLs based on the structure
-    const downloadUrl = mediaData.data.video || mediaData.data.image;
+    // Extract video and image URLs based on the response structure
+    const videoUrl = mediaData.data.video;
+    const imageUrl = mediaData.data.image;
+
+    // Determine which URL to use
+    const downloadUrl = videoUrl || imageUrl;
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl); // Debug log for download URL
@@ -27,9 +31,9 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    // Determine filename and mimetype based on the content
-    const fileName = downloadUrl.endsWith('.mp4') ? 'media.mp4' : 'media.jpg';
-    const mimetype = downloadUrl.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg';
+    // Determine filename and mimetype based on the URL
+    const fileName = videoUrl ? 'media.mp4' : 'media.jpg';
+    const mimetype = videoUrl ? 'video/mp4' : 'image/jpeg';
 
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
