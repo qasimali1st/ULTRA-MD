@@ -4,13 +4,14 @@ const { fbdown2 } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Facebook link next to the command`;
-  if (!args[0].match(/(facebook\.com\/share\/[^\s]+\/[^\s?]+)/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/(facebook\.com\/share\/[^\s]+\/[^\s]+)/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
   try {
     const url = args[0];
     console.log('URL:', url); // Debug log for URL
 
+    // Fetch media data using nayan-media-downloader
     const key = "Nayan"; // Don't change key
     let mediaData = await fbdown2(url, key);
     console.log('Media Data:', mediaData); // Debug log for media data
