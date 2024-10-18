@@ -15,7 +15,8 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await twitterdown(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    const downloadUrl = mediaData.data.HD || mediaData.data.SD; // Use HD if available, else use SD
+    const { HD, SD } = mediaData.data; // Extract HD and SD video URLs
+    const downloadUrl = HD || SD; // Use HD if available, else use SD
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl); // Debug log for download URL
@@ -24,7 +25,7 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = downloadUrl.includes('HD') ? 'media_hd.mp4' : 'media_sd.mp4';
+    const fileName = HD ? 'video_hd.mp4' : 'video_sd.mp4';
     const mimetype = 'video/mp4';
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
