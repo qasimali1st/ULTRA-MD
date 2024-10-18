@@ -20,8 +20,8 @@ const handler = async (m, { conn, args }) => {
 
     // Send buttons for SD and HD options
     const buttons = [
-      { buttonId: `${url}|sd`, buttonText: { displayText: 'SD' }, type: 1 },
-      { buttonId: `${url}|hd`, buttonText: { displayText: 'HD' }, type: 1 }
+      { buttonId: `dl|${url}|sd`, buttonText: { displayText: 'SD' }, type: 1 },
+      { buttonId: `dl|${url}|hd`, buttonText: { displayText: 'HD' }, type: 1 }
     ];
     const buttonMessage = {
       text: 'Choose the format to download:',
@@ -30,7 +30,6 @@ const handler = async (m, { conn, args }) => {
       headerType: 1
     };
     await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
-
   } catch (error) {
     console.error('Error:', error.message, error.stack);
     await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
@@ -39,7 +38,7 @@ const handler = async (m, { conn, args }) => {
 };
 
 const downloadMedia = async (m, { conn, args }) => {
-  const [url, quality] = args[0].split('|');
+  const [prefix, url, quality] = args[0].split('|');
   console.log('URL:', url, 'Quality:', quality);
 
   try {
@@ -47,7 +46,7 @@ const downloadMedia = async (m, { conn, args }) => {
     let mediaData = await threads(url);
     console.log('Media Data:', mediaData);
 
-    const downloadUrl = mediaData.data.video || mediaData.data.image;
+    const downloadUrl = quality === 'hd' ? mediaData.data.video : mediaData.data.image;
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl);
@@ -57,7 +56,7 @@ const downloadMedia = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = quality === 'hd' ? 'media_hd.mp4' : 'media_sd.mp4';
+    const fileName = quality === 'hd' ? 'media_hd' : 'media_sd';
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype: 'application/octet-stream' });
     m.react('✅');
   } catch (error) {
@@ -67,10 +66,9 @@ const downloadMedia = async (m, { conn, args }) => {
   }
 };
 
-handler.button = downloadMedia;
-
 handler.help = ['threads <url>'];
 handler.tags = ['downloader'];
-handler.command = ['threads', 'threadsd'];
+handler.command = ['threads'];
+handler.button = downloadMedia;
 
 export default handler;
