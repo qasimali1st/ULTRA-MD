@@ -4,7 +4,7 @@ const { threads } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Instagram Threads link next to the command`;
-  if (!args[0].match(/threads\.net/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/threads\.net\/(@[^\s\/]+\/post\/[^\s?]+)/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
   try {
@@ -16,7 +16,7 @@ const handler = async (m, { conn, args }) => {
     console.log('Media Data:', mediaData);
 
     // Extract the video or image URL
-    const downloadUrl = mediaData?.data?.video || mediaData?.data?.image;
+    const downloadUrl = mediaData.data?.video || mediaData.data?.image;
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl);
@@ -26,9 +26,9 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = downloadUrl.includes('.mp4') ? 'media.mp4' : downloadUrl.includes('.jpg') ? 'media.jpg' : 'media';
-    const mimetype = downloadUrl.includes('.mp4') ? 'video/mp4' : downloadUrl.includes('.jpg') ? 'image/jpeg' : 'application/octet-stream';
-    
+    const fileName = downloadUrl.match(/\.mp4|\.jpg|\.jpeg|\.png/i) ? 'media' + downloadUrl.match(/\.mp4|\.jpg|\.jpeg|\.png/i)[0] : 'media';
+    const mimetype = downloadUrl.match(/\.mp4/i) ? 'video/mp4' : downloadUrl.match(/\.jpg|\.jpeg|\.png/i) ? 'image/jpeg' : 'application/octet-stream';
+
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
   } catch (error) {
