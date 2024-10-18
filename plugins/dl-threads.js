@@ -1,4 +1,4 @@
-import axios from 'axios';
+import fetch from 'node-fetch';
 import pkg from 'nayan-media-downloader';
 const { threads } = pkg;
 
@@ -9,22 +9,16 @@ const handler = async (m, { conn, args }) => {
 
   try {
     const url = args[0];
-    console.log('URL:', url); // Debug log for URL
+    let data = await threads(url);
+    const downloadUrl = data?.downloadUrl;
 
-    // Fetch media data using nayan-media-downloader
-    let mediaData = await threads(url);
-    console.log('Media Data:', mediaData); // Debug log for media data
-
-    const { downloadUrl, fileName, mimetype } = mediaData;
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
-    console.log('Download URL:', downloadUrl); // Debug log for download URL
-
-    const response = await axios.get(downloadUrl, { responseType: 'arraybuffer' });
-    const arrayBuffer = response.data;
+    const response = await fetch(downloadUrl);
+    const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    await conn.sendFile(m.chat, mediaBuffer, fileName || 'media', 'Here is your media', m, false, { mimetype });
+    await conn.sendFile(m.chat, mediaBuffer, 'media', 'Here is your media', m);
     m.react('✅');
   } catch (error) {
     console.error('Error downloading from Instagram Threads:', error);
