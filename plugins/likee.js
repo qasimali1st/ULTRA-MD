@@ -5,7 +5,6 @@ const { likee } = pkg;
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Likee video link next to the command`;
   
-  // Updated regex to include various Likee URL patterns
   const likeeRegex = /(likee\.app|likee\.com|likee\.tv|lite\.likeevideo\.com|l\.likee\.video)/;
   if (!args[0].match(likeeRegex)) {
     throw `❌ Link incorrect`;
@@ -21,11 +20,12 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await likee(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    if (!mediaData.status) {
+    if (!mediaData.status || mediaData.status !== 200) {
       throw new Error(`Error: ${mediaData.msg}`);
     }
 
-    const downloadUrl = mediaData.data; // Assuming data contains the download URL
+    // Use withoutWatermark for the download URL
+    const downloadUrl = mediaData.data.withoutwatermark;
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl); // Debug log for download URL
@@ -37,8 +37,8 @@ const handler = async (m, { conn, args }) => {
     const mediaBuffer = Buffer.from(arrayBuffer);
 
     // Determine filename and mimetype
-    const fileName = mediaData.name || 'media.mp4'; // Default name
-    const mimetype = mediaData.mimetype || 'video/mp4'; // Default mimetype
+    const fileName = mediaData.data.title ? `${mediaData.data.title}.mp4` : 'media.mp4'; // Default name
+    const mimetype = 'video/mp4'; // Default mimetype
 
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your Likee video`, m, false, { mimetype });
     m.react('✅');
