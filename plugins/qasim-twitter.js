@@ -16,24 +16,26 @@ const handler = async (m, { conn, args }) => {
     console.log('Media Data:', mediaData); // Debug log for media data
 
     const { HD, SD } = mediaData.data; // Destructure HD and SD URLs
-    if (!HD && !SD) throw new Error('Could not fetch the download URL');
+    if (!HD && !SD) throw new Error('No media available');
 
-    // Create buttons for HD and SD options
+    // Send options for HD and SD
     const buttons = [
       { buttonId: 'download_hd', buttonText: { displayText: 'Download HD' }, type: 1 },
       { buttonId: 'download_sd', buttonText: { displayText: 'Download SD' }, type: 1 }
     ];
 
     const message = 'Choose the quality of the video to download:';
-    await conn.sendButtons(m.chat, message, buttons, m);
+    await conn.sendButton(m.chat, message, buttons, m);
 
-    // Listen for button responses
+    // Button click listener
     conn.on('buttonClick', async (button) => {
       let downloadUrl;
       if (button.id === 'download_hd') {
         downloadUrl = HD;
       } else if (button.id === 'download_sd') {
         downloadUrl = SD;
+      } else {
+        return;
       }
 
       const response = await fetch(downloadUrl);
