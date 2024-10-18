@@ -4,7 +4,7 @@ const { twitterdown } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Twitter link next to the command`;
-  if (!args[0].match(/(twitter\.com|x\.com)\/\w+\/status\/\d+/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/(x\.com\/|twitter\.com\/)/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
   try {
@@ -15,42 +15,44 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await twitterdown(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    if (!mediaData.status) throw new Error('Could not fetch media data');
-
     const { HD, SD } = mediaData.data;
-    const buttons = [];
+    if (!HD && !SD) throw new Error('No media available');
 
-    if (HD) buttons.push(['🎥 HD Video', HD]);
-    if (SD) buttons.push(['🎥 SD Video', SD]);
+    const buttons = [
+      { buttonId: `downloadHD`, buttonText: { displayText: 'Download HD' }, type: 1 },
+      { buttonId: `downloadSD`, buttonText: { displayText: 'Download SD' }, type: 1 }
+    ];
 
-    if (buttons.length === 0) throw new Error('No media available for download');
+    await conn.sendButton(m.chat, 'Choose the video quality:', buttons, m);
+    
+    // Button response handling
+    conn.on('buttonResponse', async (buttonResponse) => {
+      const buttonId = buttonResponse.buttonId;
+      let downloadUrl;
 
-    // Prepare button message
-    const buttonMessage = `Select a video quality to download:`;
-    await conn.sendButton(m.chat, buttonMessage, mssg.ig, null, buttons.map(btn => ({ buttonId: btn[1], buttonText: { displayText: btn[0] }, type: 1 })), m);
-    m.react('✅');
+      if (buttonId === 'downloadHD') {
+        downloadUrl = HD;
+      } else if (buttonId === 'downloadSD') {
+        downloadUrl = SD;
+      }
 
-    // Wait for the user to respond to the button
-    conn.on('buttonResponse', async (buttonMsg) => {
-      const selectedUrl = buttonMsg.buttonId; // Get the button response URL
-
-      try {
-        const response = await fetch(selectedUrl);
+      if (downloadUrl) {
+        const response = await fetch(downloadUrl);
         if (!response.ok) throw new Error('Failed to fetch the media content');
+
         const arrayBuffer = await response.arrayBuffer();
         const mediaBuffer = Buffer.from(arrayBuffer);
-
-        const fileName = selectedUrl.includes('HD') ? 'media_hd.mp4' : 'media_sd.mp4';
+        const fileName = buttonId === 'downloadHD' ? 'media_hd.mp4' : 'media_sd.mp4';
         const mimetype = 'video/mp4';
 
-        await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
-      } catch (error) {
-        console.error('Error downloading media:', error.message);
-        await buttonMsg.reply('⚠️ An error occurred while downloading the media.');
+        await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your video`, m, false, { mimetype });
+        m.react('✅');
+      } else {
+        await buttonResponse.reply('⚠️ An error occurred while processing your request.');
       }
     });
   } catch (error) {
-    console.error('Error downloading from Twitter:', error.message);
+    console.error('Error downloading from Twitter:', error.message, error.stack);
     await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
     m.react('❌');
   }
