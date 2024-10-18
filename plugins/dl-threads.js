@@ -15,13 +15,19 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await threads(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    // Extract video and image URLs based on the response structure
-    const videoUrl = mediaData.data.video;
-    const imageUrl = mediaData.data.image;
+    // Check the structure of mediaData
+    const videoUrl = mediaData.data?.video;
+    const imageUrl = mediaData.data?.image;
 
-    // Determine which URL to use
-    const downloadUrl = videoUrl || imageUrl;
-    if (!downloadUrl) throw new Error('Could not fetch the download URL');
+    // Determine the download URL based on the available media type
+    let downloadUrl;
+    if (videoUrl) {
+      downloadUrl = videoUrl;
+    } else if (imageUrl) {
+      downloadUrl = imageUrl;
+    } else {
+      throw new Error('Could not fetch the download URL');
+    }
 
     console.log('Download URL:', downloadUrl); // Debug log for download URL
 
@@ -31,7 +37,7 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    // Determine filename and mimetype based on the URL
+    // Determine filename and mimetype based on the content type
     const fileName = videoUrl ? 'media.mp4' : 'media.jpg';
     const mimetype = videoUrl ? 'video/mp4' : 'image/jpeg';
 
