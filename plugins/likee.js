@@ -14,34 +14,36 @@ const handler = async (m, { conn, args }) => {
 
   try {
     const url = args[0];
-    console.log('URL:', url); // Debug log for URL
+    console.log('URL:', url);
 
-    // Fetch media data using nayan-media-downloader
     let mediaData = await likee(url);
-    console.log('Media Data:', mediaData); // Debug log for media data
+    console.log('Media Data:', mediaData);
 
     if (!mediaData.status || mediaData.status !== 200) {
       throw new Error(`Error: ${mediaData.msg}`);
     }
 
-    // Use withoutWatermark for the download URL
     const downloadUrl = mediaData.data.withoutwatermark;
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
-    console.log('Download URL:', downloadUrl); // Debug log for download URL
+    console.log('Download URL:', downloadUrl);
 
     const response = await fetch(downloadUrl);
     if (!response.ok) throw new Error('Failed to fetch the media content');
 
+    // Check Content-Type
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('video')) {
+      throw new Error('Invalid content type received');
+    }
+
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    // Check if the mediaBuffer is empty
     if (mediaBuffer.length === 0) throw new Error('Downloaded file is empty');
 
-    // Determine filename and mimetype
-    const fileName = mediaData.data.title ? `${mediaData.data.title}.mp4` : 'media.mp4'; // Default name
-    const mimetype = 'video/mp4'; // Default mimetype
+    const fileName = mediaData.data.title ? `${mediaData.data.title}.mp4` : 'media.mp4';
+    const mimetype = 'video/mp4';
 
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your Likee video`, m, false, { mimetype });
     m.react('✅');
