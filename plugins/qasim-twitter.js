@@ -27,14 +27,12 @@ const handler = async (m, { conn, args }) => {
 
     // Prepare button message
     const buttonMessage = `Select a video quality to download:`;
-    await conn.sendButton(m.chat, buttonMessage, mssg.ig, null, buttons, m);
+    await conn.sendButton(m.chat, buttonMessage, mssg.ig, null, buttons.map(btn => ({ buttonId: btn[1], buttonText: { displayText: btn[0] }, type: 1 })), m);
     m.react('✅');
-    
-    // Wait for the button response
-    conn.on('buttonResponse', async (buttonMsg) => {
-      const selectedUrl = buttonMsg.body; // Get the button response URL
 
-      if (!selectedUrl) return;
+    // Wait for the user to respond to the button
+    conn.on('buttonResponse', async (buttonMsg) => {
+      const selectedUrl = buttonMsg.buttonId; // Get the button response URL
 
       try {
         const response = await fetch(selectedUrl);
