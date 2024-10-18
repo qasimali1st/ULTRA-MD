@@ -16,20 +16,19 @@ const handler = async (m, { conn, args, usedPrefix }) => {
     let mediaData = await threads(url);
     console.log('Media Data:', mediaData);
 
-    const videoUrls = mediaData.data?.videoUrls; // Assuming this holds HD and SD URLs
+    const videoUrl = mediaData.data?.video; // Use the single video URL
     const imageUrl = mediaData.data?.image;
 
-    if (videoUrls) {
-      // Prepare message and buttons for HD and SD options
+    if (videoUrl) {
+      // Prepare message and buttons for video options
       let play = `
 ≡ *Video Download Options*
 ┌──────────────
-▢ 📌 *Choose your video quality:*
+▢ 📌 *Download Video:*
 └──────────────`;
       
       await conn.sendButton2(m.chat, play, null, null, [
-        ['🎥 HD Video', `${usedPrefix}download_hd ${url}`],
-        ['🎥 SD Video', `${usedPrefix}download_sd ${url}`]
+        ['🎥 Download Video', `${usedPrefix}download_video ${videoUrl}`]
       ], null, m);
       
       conn.mediaData = mediaData; // Store media data for later use
@@ -45,18 +44,9 @@ const handler = async (m, { conn, args, usedPrefix }) => {
   }
 };
 
-// Function to handle HD video download
-const downloadHDVideo = async (m, url) => {
-  const mediaData = conn.mediaData; // Retrieve stored media data
-  const hdUrl = mediaData.data.videoUrls.hd;
-  await downloadAndSendMedia(m, hdUrl, 'media_hd.mp4', 'video/mp4');
-};
-
-// Function to handle SD video download
-const downloadSDVideo = async (m, url) => {
-  const mediaData = conn.mediaData; // Retrieve stored media data
-  const sdUrl = mediaData.data.videoUrls.sd;
-  await downloadAndSendMedia(m, sdUrl, 'media_sd.mp4', 'video/mp4');
+// Function to handle video download
+const downloadVideo = async (m, videoUrl) => {
+  await downloadAndSendMedia(m, videoUrl, 'media.mp4', 'video/mp4');
 };
 
 // Function to download and send media
@@ -70,9 +60,12 @@ const downloadAndSendMedia = async (m, downloadUrl, fileName, mimetype) => {
   await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
 };
 
+// Command to handle download requests
+handler.command = ['download_video'];
+handler.handler = downloadVideo;
+
 // Export handler
 handler.help = ['threads <url>'];
 handler.tags = ['downloader'];
-handler.command = ['threads', 'download_hd', 'download_sd'];
 
 export default handler;
