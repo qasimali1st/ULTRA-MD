@@ -4,7 +4,7 @@ const { threads } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Instagram Threads link next to the command`;
-  if (!args[0].match(/threads\.net\/t\/\d+/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/threads\.net\/(@[^\s\/]+\/post\/[^\s?]+)/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
   try {
