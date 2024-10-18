@@ -29,8 +29,30 @@ const handler = async (m, { conn, args }) => {
     const buttonMessage = `Select a video quality to download:`;
     await conn.sendButton(m.chat, buttonMessage, mssg.ig, null, buttons, m);
     m.react('✅');
+    
+    // Wait for the button response
+    conn.on('buttonResponse', async (buttonMsg) => {
+      const selectedUrl = buttonMsg.body; // Get the button response URL
+
+      if (!selectedUrl) return;
+
+      try {
+        const response = await fetch(selectedUrl);
+        if (!response.ok) throw new Error('Failed to fetch the media content');
+        const arrayBuffer = await response.arrayBuffer();
+        const mediaBuffer = Buffer.from(arrayBuffer);
+
+        const fileName = selectedUrl.includes('HD') ? 'media_hd.mp4' : 'media_sd.mp4';
+        const mimetype = 'video/mp4';
+
+        await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
+      } catch (error) {
+        console.error('Error downloading media:', error.message);
+        await buttonMsg.reply('⚠️ An error occurred while downloading the media.');
+      }
+    });
   } catch (error) {
-    console.error('Error downloading from Twitter:', error.message, error.stack);
+    console.error('Error downloading from Twitter:', error.message);
     await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
     m.react('❌');
   }
