@@ -9,12 +9,19 @@ const handler = async (m, { conn, args }) => {
 
   try {
     const url = args[0];
+    const { data } = await axios.get(url); // Scraping the URL content
+    
+    // Use nayan-media-downloader to get the media info
     let mediaData = await threads(url);
-    const downloadUrl = mediaData?.downloadUrl || mediaData?.videoUrl || mediaData?.imageUrl;
+    const { downloadUrl, fileName, mimetype } = mediaData;
+
+    const caption = `❥ HERE IS YOUR VIDEO \n\n☆ *VIDEO TITLE:* ${fileName}\n\n❥ THANKS FOR CHOOSING GLOBAL-MD`;
     
-    if (!downloadUrl) throw new Error('Could not fetch the download URL');
-    
-    await conn.sendFile(m.chat, downloadUrl, 'download', 'Here is your media', m);
+    // Directly send the downloaded file using Buffer instead of filename
+    const response = await axios.get(downloadUrl, { responseType: 'arraybuffer' });
+    const buffer = Buffer.from(response.data);
+
+    await conn.sendFile(m.chat, buffer, fileName, caption, m, false, { mimetype });
     m.react('✅');
   } catch (error) {
     console.error('Error downloading from Instagram Threads:', error);
