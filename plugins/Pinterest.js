@@ -4,7 +4,7 @@ const { pintarest } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Pinterest link next to the command`;
-  if (!args[0].match(/pin\.it\/[^\s]+/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/(pinterest\.com\/pin\/|pin\.it\/)/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
   try {
@@ -15,8 +15,7 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await pintarest(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    // Extract the download URL from mediaData
-    const downloadUrl = mediaData.url;
+    const downloadUrl = mediaData.url; // Correctly extract the download URL
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl); // Debug log for download URL
