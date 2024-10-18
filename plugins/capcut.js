@@ -9,34 +9,28 @@ const handler = async (m, { conn, args }) => {
 
   try {
     const url = args[0];
-    console.log('URL:', url);
+    console.log('URL:', url); // Debug log for URL
 
     // Fetch media data using nayan-media-downloader
     let mediaData = await capcut(url);
-    console.log('Media Data:', mediaData);
+    console.log('Media Data:', mediaData); // Debug log for media data
 
-    const downloadUrl = mediaData.data.video;
+    const { video, image } = mediaData.data; // Extract video or image
+    const downloadUrl = video || image; // Use video if available, else use image
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
-    console.log('Download URL:', downloadUrl);
+    console.log('Download URL:', downloadUrl); // Debug log for download URL
+
     const response = await fetch(downloadUrl);
-    
-    if (!response.ok) {
-      const errorBody = await response.text();
-      console.error('Fetch Error Body:', errorBody);
-      throw new Error('Failed to fetch the media content');
-    }
+    if (!response.ok) throw new Error('Failed to fetch the media content');
 
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    // Check content length
-    if (mediaBuffer.length === 0) throw new Error('Received empty media content');
-
-    // Dynamic file naming
-    const fileName = `media_${Date.now()}.${downloadUrl.endsWith('.mp4') ? 'mp4' : 'jpg'}`;
-    const mimetype = downloadUrl.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg';
-
+    const fileName = video ? 'media.mp4' : 'media.jpg';
+    const mimetype = video ? 'video/mp4' : 'image/jpeg';
+    
+    // Send the media file
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
   } catch (error) {
