@@ -20,6 +20,10 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await likee(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
+    if (!mediaData.status) {
+      throw new Error(`Error: ${mediaData.msg}`);
+    }
+
     const downloadUrl = mediaData.data; // Assuming data contains the download URL
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
