@@ -4,7 +4,7 @@ const { capcut } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the CapCut link next to the command`;
-  if (!args[0].match(/(capcut\.com\/[^\s]+)/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/capcut\.com\/t\/[^\s]+/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
   try {
@@ -15,7 +15,7 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await capcut(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    const downloadUrl = mediaData.data.video; // Correctly extract the download URL
+    const downloadUrl = mediaData.data.video; // Correctly extract the video URL
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl); // Debug log for download URL
@@ -24,13 +24,13 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = downloadUrl.endsWith('.mp4') ? 'media.mp4' : 'media.jpg';
-    const mimetype = downloadUrl.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg';
+    const fileName = 'media.mp4';
+    const mimetype = 'video/mp4';
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
   } catch (error) {
     console.error('Error downloading from CapCut:', error.message, error.stack);
-    await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
+    await m.reply('⚠️ An error occurred while processing the request. Please try again later.`);
     m.react('❌');
   }
 };
