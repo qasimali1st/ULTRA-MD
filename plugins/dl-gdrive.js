@@ -4,7 +4,7 @@ const { GDLink } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Google Drive link next to the command`;
-  if (!args[0].match(/drive\.google\.com/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/drive\.google\.com\/(file|open)\/d\/([a-zA-Z0-9_-]+)/)) throw `❌ Link incorrect`;
   m.react('⏳');
 
   try {
