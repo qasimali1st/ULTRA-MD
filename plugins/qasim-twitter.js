@@ -15,8 +15,11 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await twitterdown(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    const { HD, SD } = mediaData.data || {}; // Safely destructure HD and SD
-    if (!HD && !SD) throw new Error('No media available');
+    const { data } = mediaData;
+    if (!data) throw new Error('No media data available');
+
+    const { HD, SD } = data; // Safely destructure HD and SD
+    if (!HD && !SD) throw new Error('No HD or SD media available');
 
     // Prepare buttons for HD and SD
     const buttons = [
@@ -35,7 +38,7 @@ const handler = async (m, { conn, args }) => {
       } else if (button.id === 'download_sd') {
         downloadUrl = SD;
       } else {
-        return;
+        return; // Ignore if not a valid button
       }
 
       try {
@@ -44,10 +47,9 @@ const handler = async (m, { conn, args }) => {
 
         const arrayBuffer = await response.arrayBuffer();
         const mediaBuffer = Buffer.from(arrayBuffer);
-        const fileName = downloadUrl.endsWith('.mp4') ? 'media.mp4' : 'media.jpg';
-        const mimetype = downloadUrl.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg';
+        const fileName = downloadUrl.split('/').pop(); // Extract filename from URL
 
-        await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
+        await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m);
         m.react('✅');
       } catch (error) {
         console.error('Error downloading media:', error.message, error.stack);
