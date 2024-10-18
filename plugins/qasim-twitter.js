@@ -22,6 +22,10 @@ const handler = async (m, { conn, args }) => {
 
     const { HD, SD } = mediaData.data;
 
+    if (!HD && !SD) {
+      throw new Error('No HD or SD links available');
+    }
+
     let buttons = [
       { buttonId: 'downloadHD', buttonText: { displayText: 'Download HD' }, type: 1 },
       { buttonId: 'downloadSD', buttonText: { displayText: 'Download SD' }, type: 1 }
@@ -29,6 +33,7 @@ const handler = async (m, { conn, args }) => {
 
     await conn.sendButton(m.chat, 'Choose a quality to download:', buttons, m);
 
+    // Handle button clicks
     conn.on('buttonResponse', async (buttonId, buttonMessage) => {
       let downloadUrl;
       if (buttonId === 'downloadHD') {
