@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import pkg from 'nayan-media-downloader';
 const { threads } = pkg;
 
-const handler = async (m, { conn, args }) => {
+const handler = async (m, { conn, args, usedPrefix }) => {
   if (!args[0]) throw `✳️ Enter the Instagram Threads link next to the command`;
   if (!args[0].match(/threads\.net/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
@@ -19,17 +19,11 @@ const handler = async (m, { conn, args }) => {
     if (!video && !image) throw new Error('Could not fetch the download URL');
 
     // Send buttons for SD and HD options
-    const buttons = [
-      { buttonId: `dl|${url}|sd`, buttonText: { displayText: 'SD' }, type: 1 },
-      { buttonId: `dl|${url}|hd`, buttonText: { displayText: 'HD' }, type: 1 }
-    ];
-    const buttonMessage = {
-      text: 'Choose the format to download:',
-      footer: 'Instagram Threads Downloader',
-      buttons: buttons,
-      headerType: 1
-    };
-    await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
+    let buttonMessage = `≡ *Instagram Threads DL* \n┌──────────────\n▢ *Title:* ${mediaData.data.title || 'No Title'}\n└──────────────`;
+    await conn.sendButton(m.chat, buttonMessage, 'Choose the format to download:', 'Instagram Threads Downloader', [
+      [' SD', `${usedPrefix}threadsd ${url}|sd`],
+      [' HD', `${usedPrefix}threadsd ${url}|hd`]
+    ], null, m);
   } catch (error) {
     console.error('Error:', error.message, error.stack);
     await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
@@ -38,7 +32,7 @@ const handler = async (m, { conn, args }) => {
 };
 
 const downloadMedia = async (m, { conn, args }) => {
-  const [prefix, url, quality] = m.text.split('|'); // Make sure to split m.text
+  const [url, quality] = args[0].split('|');
   console.log('URL:', url, 'Quality:', quality);
 
   try {
@@ -56,7 +50,7 @@ const downloadMedia = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = quality === 'hd' ? 'media_hd' : 'media_sd';
+    const fileName = quality === 'hd' ? 'media_hd.mp4' : 'media_sd.jpg';
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype: 'application/octet-stream' });
     m.react('✅');
   } catch (error) {
