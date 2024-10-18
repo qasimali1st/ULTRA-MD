@@ -4,19 +4,50 @@ const { threads } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Instagram Threads link next to the command`;
-  if (!args[0].match(/threads\.net/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/threads\.net\/(@[^\s\/]+\/post\/[^\s?]+)/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
-  try {
-    const url = args[0];
-    console.log('URL:', url);
+  const url = args[0];
+  console.log('URL:', url);
 
+  try {
     // Fetch media data using nayan-media-downloader
     let mediaData = await threads(url);
     console.log('Media Data:', mediaData);
 
-    // Extract the video or image URL
-    const downloadUrl = mediaData.data?.video || mediaData.data?.image;
+    const { video, image } = mediaData.data;
+    if (!video && !image) throw new Error('Could not fetch the download URL');
+
+    // Send buttons for SD and HD options
+    const buttons = [
+      { buttonId: `${url}|sd`, buttonText: { displayText: 'SD' }, type: 1 },
+      { buttonId: `${url}|hd`, buttonText: { displayText: 'HD' }, type: 1 }
+    ];
+    const buttonMessage = {
+      text: 'Choose the format to download:',
+      footer: 'Instagram Threads Downloader',
+      buttons: buttons,
+      headerType: 1
+    };
+    await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
+
+  } catch (error) {
+    console.error('Error:', error.message, error.stack);
+    await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
+    m.react('❌');
+  }
+};
+
+const downloadMedia = async (m, format) => {
+  const [url, quality] = format.split('|');
+  console.log('URL:', url, 'Quality:', quality);
+
+  try {
+    // Fetch media data using nayan-media-downloader
+    let mediaData = await threads(url);
+    console.log('Media Data:', mediaData);
+
+    const downloadUrl = mediaData.data.video || mediaData.data.image;
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl);
@@ -26,14 +57,8 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = downloadUrl.endsWith('.mp4') ? 'media.mp4' :
-      downloadUrl.endsWith('.jpg') || downloadUrl.endsWith('.jpeg') ? 'media.jpg' :
-      downloadUrl.endsWith('.png') ? 'media.png' : 'media';
-    const mimetype = downloadUrl.endsWith('.mp4') ? 'video/mp4' :
-      downloadUrl.endsWith('.jpg') || downloadUrl.endsWith('.jpeg') ? 'image/jpeg' :
-      downloadUrl.endsWith('.png') ? 'image/png' : 'application/octet-stream';
-
-    await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
+    const fileName = quality === 'hd' ? 'media_hd' : 'media_sd';
+    await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype: 'application/octet-stream' });
     m.react('✅');
   } catch (error) {
     console.error('Error downloading from Instagram Threads:', error.message, error.stack);
@@ -42,8 +67,13 @@ const handler = async (m, { conn, args }) => {
   }
 };
 
+handler.button = async (m, { conn, args }) => {
+  const format = args[0];
+  await downloadMedia(m, format);
+};
+
 handler.help = ['threads <url>'];
 handler.tags = ['downloader'];
-handler.command = ['threads'];
+handler.command = ['threads', 'threadsd'];
 
 export default handler;
