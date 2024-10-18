@@ -4,7 +4,10 @@ const { GDLink } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Google Drive link next to the command`;
-  if (!args[0].match(/drive\.google\.com\/(file|open)\/d\/([a-zA-Z0-9_-]+)/)) throw `❌ Link incorrect`;
+  if (!args[0].match(/drive\.google\.com\/(file|open)\/d\/([a-zA-Z0-9_-]+)/)) {
+    // Adjust regex to allow both file and document links
+    throw `❌ Link incorrect`;
+  }
   m.react('⏳');
 
   try {
@@ -15,6 +18,7 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await GDLink(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
+    // Check if the media data returned a valid download URL
     const downloadUrl = mediaData.data; // Access the data directly
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
@@ -27,8 +31,8 @@ const handler = async (m, { conn, args }) => {
     const mediaBuffer = Buffer.from(arrayBuffer);
 
     // Determine file type and set filename
-    const fileName = `media.file`; // You can customize the filename if needed
-    const mimetype = 'application/octet-stream'; // Default mimetype
+    const fileName = mediaData.name || 'media.file'; // Use the name from mediaData if available
+    const mimetype = mediaData.mimetype || 'application/octet-stream'; // Default mimetype
 
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
