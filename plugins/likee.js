@@ -36,6 +36,9 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
+    // Check if the mediaBuffer is empty
+    if (mediaBuffer.length === 0) throw new Error('Downloaded file is empty');
+
     // Determine filename and mimetype
     const fileName = mediaData.data.title ? `${mediaData.data.title}.mp4` : 'media.mp4'; // Default name
     const mimetype = 'video/mp4'; // Default mimetype
