@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import pkg from 'nayan-media-downloader';
 const { threads } = pkg;
 
-const handler = async (m, { conn, args, usedPrefix }) => {
+const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Instagram Threads link next to the command`;
   if (!args[0].match(/threads\.net/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
@@ -19,11 +19,17 @@ const handler = async (m, { conn, args, usedPrefix }) => {
     if (!video && !image) throw new Error('Could not fetch the download URL');
 
     // Send buttons for SD and HD options
-    let buttonMessage = `≡ *Instagram Threads DL* \n┌──────────────\n▢ *Title:* ${mediaData.data.title || 'No Title'}\n└──────────────`;
-    await conn.sendButton(m.chat, buttonMessage, 'Choose the format to download:', 'Instagram Threads Downloader', [
-      [' SD', `${usedPrefix}threadsd ${url}|sd`],
-      [' HD', `${usedPrefix}threadsd ${url}|hd`]
-    ], null, m);
+    const buttons = [
+      { buttonId: `dl|${url}|sd`, buttonText: { displayText: 'SD' }, type: 1 },
+      { buttonId: `dl|${url}|hd`, buttonText: { displayText: 'HD' }, type: 1 }
+    ];
+    const buttonMessage = {
+      text: 'Choose the format to download:',
+      footer: 'Instagram Threads Downloader',
+      buttons: buttons,
+      headerType: 1
+    };
+    await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
   } catch (error) {
     console.error('Error:', error.message, error.stack);
     await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
@@ -32,7 +38,9 @@ const handler = async (m, { conn, args, usedPrefix }) => {
 };
 
 const downloadMedia = async (m, { conn, args }) => {
-  const [url, quality] = args[0].split('|');
+  const [prefix, url, quality] = m.text.split('|'); // Split the text correctly
+  m.react('⏳'); // React with wait emoji
+
   console.log('URL:', url, 'Quality:', quality);
 
   try {
@@ -50,13 +58,13 @@ const downloadMedia = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = quality === 'hd' ? 'media_hd.mp4' : 'media_sd.jpg';
+    const fileName = quality === 'hd' ? 'media_hd' : 'media_sd';
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype: 'application/octet-stream' });
-    m.react('✅');
+    m.react('✅'); // React with done emoji
   } catch (error) {
     console.error('Error downloading from Instagram Threads:', error.message, error.stack);
     await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
-    m.react('❌');
+    m.react('❌'); // React with error emoji
   }
 };
 
