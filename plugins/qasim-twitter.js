@@ -15,8 +15,7 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await twitterdown(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    const { video, image } = mediaData; // Correctly extract the video or image URL
-    const downloadUrl = video || image; // Use video if available, else use image
+    const downloadUrl = mediaData.download; // Assuming the download URL is directly in mediaData
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl); // Debug log for download URL
@@ -25,8 +24,8 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = video ? 'media.mp4' : 'media.jpg';
-    const mimetype = video ? 'video/mp4' : 'image/jpeg';
+    const fileName = 'media.mp4';
+    const mimetype = 'video/mp4';
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
   } catch (error) {
@@ -38,6 +37,6 @@ const handler = async (m, { conn, args }) => {
 
 handler.help = ['twitter <url>'];
 handler.tags = ['downloader'];
-handler.command = ['twitter'];
+handler.command = ['twitter', 'x'];
 
 export default handler;
