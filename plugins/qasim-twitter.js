@@ -12,16 +12,17 @@ const handler = async (m, { conn, args }) => {
     const url = args[0];
     console.log('URL:', url);
 
-    // Fetch media data using nayan-media-downloader
     let mediaData = await twitterdown(url);
     console.log('Media Data:', mediaData);
 
-    if (!mediaData.status || !mediaData.data) {
-      throw new Error('No media data found');
+    // Ensure media data is valid
+    if (!mediaData || !mediaData.status || !mediaData.data) {
+      throw new Error('Invalid media data response');
     }
 
     const { HD, SD } = mediaData.data;
 
+    // Check for availability of HD and SD
     if (!HD && !SD) {
       throw new Error('No HD or SD links available');
     }
