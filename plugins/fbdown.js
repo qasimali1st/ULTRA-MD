@@ -4,7 +4,7 @@ const { fbdown2 } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Facebook link next to the command`;
-  if (!args[0].match(/(facebook\.com\/[^\s]+\/videos\/[^\s?]+|fb\.watch\/[^\s?]+)/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/(facebook\.com\/share\/[^\s]+\/[^\s?]+)/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
   try {
@@ -30,7 +30,7 @@ const handler = async (m, { conn, args }) => {
     m.react('✅');
   } catch (error) {
     console.error('Error downloading from Facebook:', error.message, error.stack);
-    await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
+    await m.reply('⚠️ An error occurred while processing the request. Please try again later.`);
     m.react('❌');
   }
 };
