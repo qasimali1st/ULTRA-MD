@@ -25,7 +25,12 @@ const handler = async (m, { conn, args }) => {
     if (mediaData.data) {
       downloadUrl = mediaData.data; // Handle file downloads
     } else if (mediaData.url) {
-      downloadUrl = mediaData.url; // Handle document downloads
+      // For Google Docs, modify URL to export as PDF or other formats
+      if (url.includes('/document/d/')) {
+        downloadUrl = `${url}/export?format=pdf`;
+      } else {
+        downloadUrl = mediaData.url; // Handle other types
+      }
     } else {
       throw new Error('Could not fetch the download URL');
     }
