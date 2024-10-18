@@ -26,6 +26,7 @@ const handler = async (m, { conn, args }) => {
       throw new Error('No HD or SD links available');
     }
 
+    // Prepare buttons for HD and SD downloads
     let buttons = [
       { buttonId: 'downloadHD', buttonText: { displayText: 'Download HD' }, type: 1 },
       { buttonId: 'downloadSD', buttonText: { displayText: 'Download SD' }, type: 1 }
@@ -43,16 +44,21 @@ const handler = async (m, { conn, args }) => {
       }
 
       if (downloadUrl) {
-        const response = await fetch(downloadUrl);
-        if (!response.ok) throw new Error('Failed to fetch media content');
-        
-        const arrayBuffer = await response.arrayBuffer();
-        const mediaBuffer = Buffer.from(arrayBuffer);
-        
-        const fileName = buttonId === 'downloadHD' ? 'media_hd.mp4' : 'media_sd.mp4';
-        const mimetype = 'video/mp4';
-        
-        await conn.sendFile(m.chat, mediaBuffer, fileName, 'Here is your media', m, false, { mimetype });
+        try {
+          const response = await fetch(downloadUrl);
+          if (!response.ok) throw new Error('Failed to fetch media content');
+          
+          const arrayBuffer = await response.arrayBuffer();
+          const mediaBuffer = Buffer.from(arrayBuffer);
+          
+          const fileName = buttonId === 'downloadHD' ? 'media_hd.mp4' : 'media_sd.mp4';
+          const mimetype = 'video/mp4';
+          
+          await conn.sendFile(m.chat, mediaBuffer, fileName, 'Here is your media', m, false, { mimetype });
+        } catch (error) {
+          console.error('Error fetching media:', error.message);
+          await m.reply('⚠️ An error occurred while fetching the media. Please try again later.');
+        }
       }
     });
   } catch (error) {
