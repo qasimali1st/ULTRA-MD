@@ -4,7 +4,7 @@ const { twitterdown } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Twitter link next to the command`;
-  if (!args[0].match(/x\.com\/(@[^\s\/]+\/post\/[^\s?]+)/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/x\.com\/[^\s\/]+\/status\/[^\s?]+/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
   try {
