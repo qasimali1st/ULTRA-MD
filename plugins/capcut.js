@@ -9,23 +9,29 @@ const handler = async (m, { conn, args }) => {
 
   try {
     const url = args[0];
-    console.log('URL:', url); // Debug log for URL
+    console.log('URL:', url);
 
-    // Fetch media data using nayan-media-downloader
     let mediaData = await capcut(url);
-    console.log('Media Data:', mediaData); // Debug log for media data
+    console.log('Media Data:', mediaData);
 
-    const downloadUrl = mediaData.data.video; // Correctly extract the download URL
+    const downloadUrl = mediaData.data.video;
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
-    console.log('Download URL:', downloadUrl); // Debug log for download URL
+    console.log('Download URL:', downloadUrl);
     const response = await fetch(downloadUrl);
-    if (!response.ok) throw new Error('Failed to fetch the media content');
+    
+    if (!response.ok) {
+      const errorBody = await response.text();
+      console.error('Fetch Error Body:', errorBody);
+      throw new Error('Failed to fetch the media content');
+    }
+
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
     const fileName = downloadUrl.endsWith('.mp4') ? 'media.mp4' : 'media.jpg';
     const mimetype = downloadUrl.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg';
+    
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
   } catch (error) {
