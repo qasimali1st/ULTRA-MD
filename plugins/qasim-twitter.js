@@ -68,14 +68,6 @@ const handler = async (m, { conn, args }) => {
 
 handler.help = ['twitter <url>'];
 handler.tags = ['downloader'];
-handler.command = ['twitter', 'x'];
+handler.command = ['twitterdl', 'xtdl'];
 
 export default handler;
-
-// Function to check for media availability (optional)
-async function hasMedia(url) {
-  const oembedUrl = `https://publish.twitter.com/oembed?url=${url}`;
-  const response = await fetch(oembedUrl);
-  const data = await response.json();
-  return data.hasOwnProperty('thumbnail_url') || data.hasOwnProperty('video');
-}
