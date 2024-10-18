@@ -15,7 +15,7 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await GDLink(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    const downloadUrl = mediaData.url; // Assuming the data contains a url property
+    const downloadUrl = mediaData.data; // Access the data directly
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl); // Debug log for download URL
@@ -27,8 +27,8 @@ const handler = async (m, { conn, args }) => {
     const mediaBuffer = Buffer.from(arrayBuffer);
 
     // Determine file type and set filename
-    const fileName = mediaData.name || 'media.file'; // Use the name from mediaData if available
-    const mimetype = mediaData.mimetype || 'application/octet-stream'; // Default mimetype
+    const fileName = `media.file`; // You can customize the filename if needed
+    const mimetype = 'application/octet-stream'; // Default mimetype
 
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
