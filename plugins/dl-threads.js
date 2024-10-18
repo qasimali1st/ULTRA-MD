@@ -38,7 +38,7 @@ const handler = async (m, { conn, args }) => {
 };
 
 const downloadMedia = async (m, { conn, args }) => {
-  const [prefix, url, quality] = args[0].split('|');
+  const [prefix, url, quality] = m.text.split('|'); // Make sure to split m.text
   console.log('URL:', url, 'Quality:', quality);
 
   try {
@@ -66,9 +66,10 @@ const downloadMedia = async (m, { conn, args }) => {
   }
 };
 
+handler.button = downloadMedia;
+
 handler.help = ['threads <url>'];
 handler.tags = ['downloader'];
 handler.command = ['threads'];
-handler.button = downloadMedia;
 
 export default handler;
