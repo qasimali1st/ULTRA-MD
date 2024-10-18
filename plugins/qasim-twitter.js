@@ -15,8 +15,7 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await twitterdown(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    const { HD, SD } = mediaData; // Extract HD and SD video URLs
-    const downloadUrl = HD || SD; // Prefer HD if available, else use SD
+    const downloadUrl = mediaData.download; // Correctly extract the video URL
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl); // Debug log for download URL
@@ -25,13 +24,13 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = HD ? 'video_hd.mp4' : 'video_sd.mp4';
+    const fileName = 'media.mp4';
     const mimetype = 'video/mp4';
-    await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your video`, m, false, { mimetype });
+    await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
   } catch (error) {
     console.error('Error downloading from Twitter:', error.message, error.stack);
-    await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
+    await m.reply('⚠️ An error occurred while processing the request. Please try again later.`);
     m.react('❌');
   }
 };
