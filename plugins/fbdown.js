@@ -11,12 +11,12 @@ const handler = async (m, { conn, args }) => {
     const url = args[0];
     console.log('URL:', url); // Debug log for URL
 
-    // Fetch media data using nayan-media-downloader
-    const key = "Nayan";
+    const key = "Nayan"; // Don't change key
     let mediaData = await fbdown2(url, key);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    const downloadUrl = mediaData.url || mediaData.data?.url; // Correctly extract the download URL
+    const { hd, sd } = mediaData.media; // Correctly extract the HD or SD URL
+    const downloadUrl = hd || sd; // Use HD if available, else use SD
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl); // Debug log for download URL
@@ -25,8 +25,8 @@ const handler = async (m, { conn, args }) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = downloadUrl.endsWith('.mp4') ? 'media.mp4' : 'media.jpg';
-    const mimetype = downloadUrl.endsWith('.mp4') ? 'video/mp4' : 'image/jpeg';
+    const fileName = downloadUrl.endsWith('.mp4') ? 'media_hd.mp4' : 'media_sd.mp4';
+    const mimetype = 'video/mp4';
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
   } catch (error) {
