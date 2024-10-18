@@ -5,8 +5,9 @@ const { likee } = pkg;
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Likee video link next to the command`;
   
-  // Updated regex to include the new Likee URL pattern
-  if (!args[0].match(/(likee\.app|likee\.com|likee\.tv|lite\.likeevideo\.com)/)) {
+  // Updated regex to include various Likee URL patterns
+  const likeeRegex = /(likee\.app|likee\.com|likee\.tv|lite\.likeevideo\.com)/;
+  if (!args[0].match(likeeRegex)) {
     throw `❌ Link incorrect`;
   }
   
