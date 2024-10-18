@@ -4,7 +4,7 @@ const { threads } = pkg;
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) throw `✳️ Enter the Instagram Threads link next to the command`;
-  if (!args[0].match(/threads\.net\/(@[^\s\/]+\/post\/[^\s?]+)/gi)) throw `❌ Link incorrect`;
+  if (!args[0].match(/threads\.net/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
   const url = args[0];
@@ -38,8 +38,8 @@ const handler = async (m, { conn, args }) => {
   }
 };
 
-const downloadMedia = async (m, format) => {
-  const [url, quality] = format.split('|');
+const downloadMedia = async (m, { conn, args }) => {
+  const [url, quality] = args[0].split('|');
   console.log('URL:', url, 'Quality:', quality);
 
   try {
@@ -57,7 +57,7 @@ const downloadMedia = async (m, format) => {
     const arrayBuffer = await response.arrayBuffer();
     const mediaBuffer = Buffer.from(arrayBuffer);
 
-    const fileName = quality === 'hd' ? 'media_hd' : 'media_sd';
+    const fileName = quality === 'hd' ? 'media_hd.mp4' : 'media_sd.mp4';
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype: 'application/octet-stream' });
     m.react('✅');
   } catch (error) {
@@ -67,10 +67,7 @@ const downloadMedia = async (m, format) => {
   }
 };
 
-handler.button = async (m, { conn, args }) => {
-  const format = args[0];
-  await downloadMedia(m, format);
-};
+handler.button = downloadMedia;
 
 handler.help = ['threads <url>'];
 handler.tags = ['downloader'];
