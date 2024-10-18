@@ -15,8 +15,7 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await fbdown2(url, key);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    const { hd, sd } = mediaData.media; // Correctly extract the HD or SD URL
-    const downloadUrl = hd || sd; // Use HD if available, else use SD
+    const downloadUrl = mediaData.media.hd || mediaData.media.sd; // Correctly extract the download URL
     if (!downloadUrl) throw new Error('Could not fetch the download URL');
 
     console.log('Download URL:', downloadUrl); // Debug log for download URL
