@@ -31,13 +31,13 @@ const handler = async (m, { conn, args }) => {
     m.react('✅');
   } catch (error) {
     console.error('Error downloading from Twitter:', error.message, error.stack);
-    await m.reply('⚠️ An error occurred while processing the request. Please try again later.`);
+    await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
     m.react('❌');
   }
 };
 
 handler.help = ['twitter <url>'];
 handler.tags = ['downloader'];
-handler.command = ['twitter', 'x'];
+handler.command = ['twitter'];
 
 export default handler;
