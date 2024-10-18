@@ -3,7 +3,7 @@ import pkg from 'nayan-media-downloader';
 const { twitterdown } = pkg;
 
 const handler = async (m, { conn, args }) => {
-  if (!args[0]) throw `✳️ Enter the Twitter link next to the command`;
+  if (!args[0]) throw `✳️ Enter the X (Twitter) link next to the command`;
   if (!args[0].match(/x\.com\/([^\s\/]+\/status\/[^\s?]+)/gi)) throw `❌ Link incorrect`;
   m.react('⏳');
 
@@ -30,8 +30,8 @@ const handler = async (m, { conn, args }) => {
     await conn.sendFile(m.chat, mediaBuffer, fileName, `Here is your media`, m, false, { mimetype });
     m.react('✅');
   } catch (error) {
-    console.error('Error downloading from Twitter:', error.message, error.stack);
-    await m.reply('⚠️ An error occurred while processing the request. Please try again later.`);
+    console.error('Error downloading from X (Twitter):', error.message, error.stack);
+    await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
     m.react('❌');
   }
 };
