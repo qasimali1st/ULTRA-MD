@@ -15,7 +15,7 @@ const handler = async (m, { conn, args }) => {
     let mediaData = await twitterdown(url);
     console.log('Media Data:', mediaData); // Debug log for media data
 
-    const { HD, SD } = mediaData.data; // Destructure HD and SD URLs
+    const { HD, SD } = mediaData.data || {}; // Safely destructure HD and SD
     if (!HD && !SD) throw new Error('No media available');
 
     // Prepare buttons for HD and SD
