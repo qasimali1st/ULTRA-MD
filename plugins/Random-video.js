@@ -11,17 +11,24 @@ const videoUrls = [
     'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/notnot.json',
 ];
 
-let handler = async (m, { command, conn }) => {
-    // Show waiting reaction
-    await conn.sendReaction('⏳', m.chat, m.key);
-    
-    let apiUrl;
+const fetchWithRetry = async (url, options, retries = 3) => {
+    for (let i = 0; i < retries; i++) {
+        const response = await fetch(url, options);
+        if (response.ok) return response;
+        console.log(`Retrying... (${i + 1})`);
+    }
+    throw new Error('Failed to fetch media content after retries');
+};
 
+let handler = async (m, { command, conn }) => {
     // Randomly select a video source from the list
     const randomUrl = videoUrls[Math.floor(Math.random() * videoUrls.length)];
 
+    // React with a loading emoji
+    await m.react('⏳');
+
     try {
-        const response = await fetch(randomUrl);
+        const response = await fetchWithRetry(randomUrl);
 
         if (!response.ok) {
             throw new Error(`API Error: ${response.statusText}`);
@@ -33,11 +40,12 @@ let handler = async (m, { command, conn }) => {
         // Send the video to WhatsApp
         await conn.sendFile(m.chat, video.url, '', 'Here is your video!', m);
 
-        // Change reaction to tick mark
-        await conn.sendReaction('✅', m.chat, m.key);
+        // Change reaction to a tick mark
+        await m.react('✅');
     } catch (error) {
         console.error('Error:', error);
-        throw `*ERROR*: ${error.message}`;
+        await m.reply('⚠️ An error occurred while processing the request. Please try again later.');
+        await m.react('❌');
     }
 };
 
