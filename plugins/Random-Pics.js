@@ -1,17 +1,16 @@
 import fetch from 'node-fetch';
 
-const tiktokImageUrls = {
-    chinese: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/chinese.json',
+const imageUrls = {
+    chinese: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/china.json',
     hijab: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/hijab.json',
-    japanese: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/japanese.json',
-    korean: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/korean.json',
-    malay: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/malay.json',
-    thai: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/thai.json',
-    vietnamese: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/vietnamese.json',
-    indo: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/indo.json',
-};
-
-const randomImageUrls = {
+    japanese: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/japan.json',
+    korean: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/korea.json',
+    malay: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/malaysia.json',
+    random: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/random.json',
+    random2: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/random2.json',
+    thai: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/thailand.json',
+    vietnamese: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/vietnam.json',
+    indo: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/indonesia.json',
     boneka: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/boneka.json',
     blackpink: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/blackpink.json',
     bike: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/bike.json',
@@ -46,26 +45,14 @@ const fetchWithRetry = async (url, options, retries = 3) => {
 };
 
 let handler = async (m, { command, conn }) => {
-    let url;
-    
-    // Check if the command corresponds to tiktok images
-    if (tiktokImageUrls[command]) {
-        url = tiktokImageUrls[command];
-    } 
-    // Check if the command corresponds to random images
-    else if (randomImageUrls[command]) {
-        url = randomImageUrls[command];
-    } 
-    else {
-        await m.reply('⚠️ Command not found.');
-        return;
-    }
+    const selectedUrl = imageUrls[command];
+    if (!selectedUrl) return m.reply('Command not found.');
 
     // React with a loading emoji
     await m.react('⏳');
 
     try {
-        const response = await fetchWithRetry(url);
+        const response = await fetchWithRetry(selectedUrl);
 
         if (!response.ok) {
             throw new Error(`API Error: ${response.statusText}`);
@@ -75,7 +62,7 @@ let handler = async (m, { command, conn }) => {
         const image = pickRandom(imageData);
 
         // Send the image to WhatsApp
-        await conn.sendFile(m.chat, image.url, '', 'Here is your image!', m);
+        await conn.sendFile(m.chat, image.url, '', `Hi ${m.pushName}, here is the result of: ${command}`, m);
 
         // Change reaction to a tick mark
         await m.react('✅');
@@ -86,23 +73,12 @@ let handler = async (m, { command, conn }) => {
     }
 };
 
-handler.help = [
-    'chinese', 'hijab', 'japanese', 'korean', 'malay', 'thai', 'vietnamese', 'indo', 
-    'boneka', 'blackpink', 'bike', 'antiwork', 'aesthetic', 'justina', 'doggo', 
-    'cosplay', 'cat', 'car', 'profile', 'ppcouple', 'notnot', 'kpop', 'kayes', 
-    'ulzzanggirl', 'ulzzangboy', 'ryujin', 'rose', 'pubg', 'wallml', 'wallhp'
-];
+handler.help = ['chinese', 'hijab', 'japanese', 'korean', 'malay', 'random', 'random2', 'thai', 'vietnamese', 'indo', 'boneka', 'blackpink', 'bike', 'antiwork', 'aesthetic', 'justina', 'doggo', 'cosplay', 'cat', 'car', 'profile', 'ppcouple', 'notnot', 'kpop', 'kayes', 'ulzzanggirl', 'ulzzangboy', 'ryujin', 'rose', 'pubg', 'wallml', 'wallhp'];
 handler.tags = ['image'];
-handler.command = [
-    'chinese', 'hijab', 'japanese', 'korean', 'malay', 'thai', 'vietnamese', 'indo', 
-    'boneka', 'blackpink', 'bike', 'antiwork', 'aesthetic', 'justina', 'doggo', 
-    'cosplay', 'cat', 'car', 'profile', 'ppcouple', 'notnot', 'kpop', 'kayes', 
-    'ulzzanggirl', 'ulzzangboy', 'ryujin', 'rose', 'pubg', 'wallml', 'wallhp'
-];
+handler.command = ['chinese', 'hijab', 'japanese', 'korean', 'malay', 'random', 'random2', 'thai', 'vietnamese', 'indo', 'boneka', 'blackpink', 'bike', 'antiwork', 'aesthetic', 'justina', 'doggo', 'cosplay', 'cat', 'car', 'profile', 'ppcouple', 'notnot', 'kpop', 'kayes', 'ulzzanggirl', 'ulzzangboy', 'ryujin', 'rose', 'pubg', 'wallml', 'wallhp'];
 
 export default handler;
 
 function pickRandom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
-    
