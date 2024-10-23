@@ -63,7 +63,7 @@ let handler = async (m, { command, conn }) => {
         const image = pickRandom(imageData);
 
         // Send the image to WhatsApp
-        await conn.sendFile(m.chat, image.url, '', `Here is the result of: ${command}\nPowered By © ULTRA-MD`, m);
+        await conn.sendFile(m.chat, image.url, '', `*Here is the result of: ${command}*\n*𝙿𝙾𝚆𝙴𝚁𝙴𝙳 𝙱𝚈 © 𝚄𝙻𝚃𝚁𝙰-𝙼𝙳*`, m);
 
         // Change reaction to a tick mark
         await m.react('✅');
