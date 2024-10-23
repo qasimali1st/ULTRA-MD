@@ -38,7 +38,7 @@ let handler = async (m, { command, conn }) => {
         const video = pickRandom(videoData);
 
         // Send the video to WhatsApp
-        await conn.sendFile(m.chat, video.url, '', 'Here is your video!', m);
+        await conn.sendFile(m.chat, video.url, '', '*Here is your video!*\n*𝙿𝙾𝚆𝙴𝚁𝙴𝙳 𝙱𝚈 © 𝚄𝙻𝚃𝚁𝙰-𝙼𝙳*', m);
 
         // Change reaction to a tick mark
         await m.react('✅');
