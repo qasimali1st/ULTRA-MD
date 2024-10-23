@@ -1,41 +1,40 @@
 import fetch from 'node-fetch';
 
-const imageUrls = [
-    // Existing URLs
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/china.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/hijab.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/japan.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/korea.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/malaysia.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/random.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/random2.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/thailand.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/vietnam.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/indonesia.json',
-    // New URLs from randompics directory
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/boneka.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/blackpink.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/bike.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/antiwork.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/aesthetic.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/justina.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/doggo.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/cosplay.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/cat.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/car.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/profile.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/ppcouple.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/notnot.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/kpop.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/kayes.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/ulzzanggirl.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/ulzzangboy.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/ryujin.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/rose.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/pubg.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/wallml.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/wallhp.json',
-];
+const tiktokImageUrls = {
+    chinese: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/chinese.json',
+    hijab: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/hijab.json',
+    japanese: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/japanese.json',
+    korean: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/korean.json',
+    malay: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/malay.json',
+    thai: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/thai.json',
+    vietnamese: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/vietnamese.json',
+    indo: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/indo.json',
+};
+
+const randomImageUrls = {
+    boneka: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/boneka.json',
+    blackpink: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/blackpink.json',
+    bike: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/bike.json',
+    antiwork: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/antiwork.json',
+    aesthetic: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/aesthetic.json',
+    justina: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/justina.json',
+    doggo: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/doggo.json',
+    cosplay: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/cosplay.json',
+    cat: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/cat.json',
+    car: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/car.json',
+    profile: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/profile.json',
+    ppcouple: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/ppcouple.json',
+    notnot: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/notnot.json',
+    kpop: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/kpop.json',
+    kayes: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/kayes.json',
+    ulzzanggirl: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/ulzzanggirl.json',
+    ulzzangboy: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/ulzzangboy.json',
+    ryujin: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/ryujin.json',
+    rose: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/rose.json',
+    pubg: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/pubg.json',
+    wallml: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/wallml.json',
+    wallhp: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/wallhp.json',
+};
 
 const fetchWithRetry = async (url, options, retries = 3) => {
     for (let i = 0; i < retries; i++) {
@@ -47,13 +46,26 @@ const fetchWithRetry = async (url, options, retries = 3) => {
 };
 
 let handler = async (m, { command, conn }) => {
-    const randomUrl = imageUrls[Math.floor(Math.random() * imageUrls.length)];
+    let url;
+    
+    // Check if the command corresponds to tiktok images
+    if (tiktokImageUrls[command]) {
+        url = tiktokImageUrls[command];
+    } 
+    // Check if the command corresponds to random images
+    else if (randomImageUrls[command]) {
+        url = randomImageUrls[command];
+    } 
+    else {
+        await m.reply('⚠️ Command not found.');
+        return;
+    }
 
     // React with a loading emoji
     await m.react('⏳');
 
     try {
-        const response = await fetchWithRetry(randomUrl);
+        const response = await fetchWithRetry(url);
 
         if (!response.ok) {
             throw new Error(`API Error: ${response.statusText}`);
@@ -63,7 +75,7 @@ let handler = async (m, { command, conn }) => {
         const image = pickRandom(imageData);
 
         // Send the image to WhatsApp
-        await conn.sendFile(m.chat, image.url, '', `Hi ${m.pushName}, here is the result of: ${command}`, m);
+        await conn.sendFile(m.chat, image.url, '', 'Here is your image!', m);
 
         // Change reaction to a tick mark
         await m.react('✅');
@@ -74,13 +86,23 @@ let handler = async (m, { command, conn }) => {
     }
 };
 
-// Updated help and command lists to include new types
-handler.help = ['chinese', 'hijab', 'japanese', 'korean', 'malay', 'randomgirl', 'randomboy', 'thai', 'vietnamese', 'indo', 'boneka', 'blackpink', 'bike', 'antiwork', 'aesthetic', 'justina', 'doggo', 'cosplay', 'cat', 'car', 'profile', 'ppcouple', 'notnot', 'kpop', 'kayes', 'ulzzanggirl', 'ulzzangboy', 'ryujin', 'rose', 'pubg', 'wallml', 'wallhp'];
+handler.help = [
+    'chinese', 'hijab', 'japanese', 'korean', 'malay', 'thai', 'vietnamese', 'indo', 
+    'boneka', 'blackpink', 'bike', 'antiwork', 'aesthetic', 'justina', 'doggo', 
+    'cosplay', 'cat', 'car', 'profile', 'ppcouple', 'notnot', 'kpop', 'kayes', 
+    'ulzzanggirl', 'ulzzangboy', 'ryujin', 'rose', 'pubg', 'wallml', 'wallhp'
+];
 handler.tags = ['image'];
-handler.command = ['chinese', 'hijab', 'japanese', 'korean', 'malay', 'randomgirl', 'randomboy', 'thai', 'vietnamese', 'indo', 'boneka', 'blackpink', 'bike', 'antiwork', 'aesthetic', 'justina', 'doggo', 'cosplay', 'cat', 'car', 'profile', 'ppcouple', 'notnot', 'kpop', 'kayes', 'ulzzanggirl', 'ulzzangboy', 'ryujin', 'rose', 'pubg', 'wallml', 'wallhp'];
+handler.command = [
+    'chinese', 'hijab', 'japanese', 'korean', 'malay', 'thai', 'vietnamese', 'indo', 
+    'boneka', 'blackpink', 'bike', 'antiwork', 'aesthetic', 'justina', 'doggo', 
+    'cosplay', 'cat', 'car', 'profile', 'ppcouple', 'notnot', 'kpop', 'kayes', 
+    'ulzzanggirl', 'ulzzangboy', 'ryujin', 'rose', 'pubg', 'wallml', 'wallhp'
+];
 
 export default handler;
 
 function pickRandom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
-                }
+}
+    
