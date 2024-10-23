@@ -1,15 +1,15 @@
 import fetch from 'node-fetch';
 
-const videoUrls = [
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/tiktokgirl.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/gheayubi.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/bocil.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/ukhty.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/santuy.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/kayes.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/panrika.json',
-    'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/notnot.json',
-];
+const videoUrls = {
+    tiktokgirl: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/tiktokgirl.json',
+    tiktokghea: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/gheayubi.json',
+    tiktokbocil: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/bocil.json',
+    tiktoknukhty: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/ukhty.json',
+    tiktoksantuy: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/santuy.json',
+    tiktokkayes: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/kayes.json',
+    tiktokpanrika: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/panrika.json',
+    tiktoknotnot: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokvids/notnot.json',
+};
 
 const fetchWithRetry = async (url, options, retries = 3) => {
     for (let i = 0; i < retries; i++) {
@@ -21,14 +21,14 @@ const fetchWithRetry = async (url, options, retries = 3) => {
 };
 
 let handler = async (m, { command, conn }) => {
-    // Randomly select a video source from the list
-    const randomUrl = videoUrls[Math.floor(Math.random() * videoUrls.length)];
+    const selectedUrl = videoUrls[command];
+    if (!selectedUrl) return m.reply('Command not found.');
 
     // React with a loading emoji
     await m.react('⏳');
 
     try {
-        const response = await fetchWithRetry(randomUrl);
+        const response = await fetchWithRetry(selectedUrl);
 
         if (!response.ok) {
             throw new Error(`API Error: ${response.statusText}`);
