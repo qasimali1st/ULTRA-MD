@@ -13,7 +13,7 @@ const imageUrls = {
     vietnamese: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/vietnam.json',
     indo: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/tiktokpics/indonesia.json',
     boneka: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/boneka.json',
-    blackpink2: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/blackpink.json',
+    blackpink3: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/blackpink.json',
     bike: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/bike.json',
     antiwork: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/antiwork.json',
     aesthetic: 'https://raw.githubusercontent.com/GlobalTechInfo/GLOBAL-XMD/master/src/media/randompics/aesthetic.json',
@@ -74,9 +74,9 @@ let handler = async (m, { command, conn }) => {
     }
 };
 
-handler.help = ['chinese', 'malaysia', 'hijab', 'japanese', 'korean', 'malay', 'random', 'random2', 'thai', 'vietnamese', 'indo', 'boneka', 'blackpink2', 'bike', 'antiwork', 'aesthetic', 'justina', 'doggo', 'cosplay2', 'cat', 'car', 'profile2', 'ppcouple2', 'notnot', 'kpop', 'kayes', 'ulzzanggirl', 'ulzzangboy', 'ryujin', 'rose', 'pubg', 'wallml', 'wallhp'];
+handler.help = ['chinese', 'malaysia', 'hijab', 'japanese', 'korean', 'malay', 'random', 'random2', 'thai', 'vietnamese', 'indo', 'boneka', 'blackpink3', 'bike', 'antiwork', 'aesthetic', 'justina', 'doggo', 'cosplay2', 'cat', 'car', 'profile2', 'ppcouple2', 'notnot', 'kpop', 'kayes', 'ulzzanggirl', 'ulzzangboy', 'ryujin', 'rose', 'pubg', 'wallml', 'wallhp'];
 handler.tags = ['image'];
-handler.command = ['chinese', 'malaysia', 'hijab', 'japanese', 'korean', 'malay', 'random', 'random2', 'thai', 'vietnamese', 'indo', 'boneka', 'blackpink2', 'bike', 'antiwork', 'aesthetic', 'justina', 'doggo', 'cosplay2', 'cat', 'car', 'profile2', 'ppcouple2', 'notnot', 'kpop', 'kayes', 'ulzzanggirl', 'ulzzangboy', 'ryujin', 'rose', 'pubg', 'wallml', 'wallhp'];
+handler.command = ['chinese', 'malaysia', 'hijab', 'japanese', 'korean', 'malay', 'random', 'random2', 'thai', 'vietnamese', 'indo', 'boneka', 'blackpink3', 'bike', 'antiwork', 'aesthetic', 'justina', 'doggo', 'cosplay2', 'cat', 'car', 'profile2', 'ppcouple2', 'notnot', 'kpop', 'kayes', 'ulzzanggirl', 'ulzzangboy', 'ryujin', 'rose', 'pubg', 'wallml', 'wallhp'];
 
 export default handler;
 
