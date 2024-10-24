@@ -130,10 +130,10 @@ export async function handler(chatUpdate) {
       if (typeof chat !== 'object') global.db.data.chats[m.chat] = {}
       if (chat) {
         if (!('antiDelete' in chat)) chat.antiDelete = true
-        if (!('antiLink' in chat)) chat.antiLink = false
+        if (!('antiLink' in chat)) chat.antiLink = true
         if (!('antiSticker' in chat)) chat.antiSticker = false
         if (!('antiToxic' in chat)) chat.antiToxic = false
-        if (!('detect' in chat)) chat.detect = false
+        if (!('detect' in chat)) chat.detect = true
         if (!('getmsg' in chat)) chat.getmsg = true
         if (!('isBanned' in chat)) chat.isBanned = false
         if (!('nsfw' in chat)) chat.nsfw = false
@@ -144,17 +144,17 @@ export async function handler(chatUpdate) {
         if (!('sWelcome' in chat)) chat.sWelcome = ''
         if (!('useDocument' in chat)) chat.useDocument = false
         if (!('viewOnce' in chat)) chat.viewOnce = false
-        if (!('viewStory' in chat)) chat.viewStory = false
+        if (!('viewStory' in chat)) chat.viewStory = true
         if (!('welcome' in chat)) chat.welcome = false
-        if (!('chatbot' in chat)) chat.chatbot = false
+        if (!('chatbot' in chat)) chat.chatbot = true
         if (!isNumber(chat.expired)) chat.expired = 0
       } else
         global.db.data.chats[m.chat] = {
           antiDelete: true,
-          antiLink: false,
+          antiLink: true,
           antiSticker: false,
           antiToxic: false,
-          detect: false,
+          detect: true,
           expired: 0,
           getmsg: true,
           isBanned: false,
@@ -167,9 +167,9 @@ export async function handler(chatUpdate) {
           sWelcome: '',
           useDocument: false,
           viewOnce: false,
-          viewStory: false,
+          viewStory: true,
           welcome: false,
-          chatbot: false,
+          chatbot: true,
         }
 
       let settings = global.db.data.settings[this.user.jid]
@@ -590,7 +590,7 @@ export async function participantsUpdate({ id, participants, action }) {
                 contextInfo: {
                   mentionedJid: [user],
                   externalAdReply: {
-                    title: 'Global Bot',
+                    title: 'ULTRA-MD',
                     body: 'Welcome to Group',
                     thumbnailUrl: welcomeApiUrl,
                     sourceUrl: 'https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07',
@@ -647,7 +647,7 @@ export async function participantsUpdate({ id, participants, action }) {
                 contextInfo: {
                   mentionedJid: [user],
                   externalAdReply: {
-                    title: 'Global Bot',
+                    title: 'ULTRA-MD',
                     body: 'Goodbye from  Group',
                     thumbnailUrl: leaveApiUrl,
                     sourceUrl: 'https://whatsapp.com/channel/0029VagJIAr3bbVBCpEkAM07',
